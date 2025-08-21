@@ -1,23 +1,31 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Calendar, MapPin, MessageCircle, Users, TrendingUp, Star } from 'lucide-react';
+import { Calendar, MapPin, MessageCircle, Users, TrendingUp, Star, LucideIcon } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/components/ui/use-toast';
+import { PageProps } from '@/types';
 
-const Dashboard = () => {
+interface StatItem {
+  icon: LucideIcon;
+  label: string;
+  value: string;
+  color: string;
+}
+
+const Dashboard: React.FC<PageProps> = () => {
   const { toast } = useToast();
 
-  const handleCardClick = (feature) => {
+  const handleCardClick = (feature: string) => {
     toast({
       title: `🎯 ${feature}`,
       description: "🚧 Diese Funktion ist noch nicht implementiert—aber keine Sorge! Du kannst sie in deinem nächsten Prompt anfordern! 🚀"
     });
   };
 
-  const stats = [
+  const stats: StatItem[] = [
     { icon: Users, label: 'Freunde', value: '24', color: 'text-blue-400' },
     { icon: MessageCircle, label: 'Nachrichten', value: '12', color: 'text-green-400' },
     { icon: Calendar, label: 'Events', value: '8', color: 'text-purple-400' },

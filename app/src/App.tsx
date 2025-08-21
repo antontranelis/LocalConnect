@@ -11,7 +11,7 @@ import Messages from '@/pages/Messages';
 import Friends from '@/pages/Friends';
 import Groups from '@/pages/Groups';
 import Profile from '@/pages/Profile';
-import Settings from '@/pages/Settings.jsx';
+import Settings from '@/pages/Settings';
 
 function App() {
   return (

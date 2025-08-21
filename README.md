@@ -1,8 +1,15 @@
 # LokalConnect
 
-**Local Networking Platform** - A modern React application for local community building and networking.
+**Local Networking Platform** - A modern full-stack TypeScript application for local community building and networking.
 
 LokalConnect connects people in their immediate area, enabling them to discover local events, trade on the marketplace, and build genuine connections.
+
+## 🏗️ Architecture
+
+This is a monorepo containing:
+- **`/app`** - React TypeScript frontend with Vite
+- **`/backend`** - Directus headless CMS backend
+- **Docker Compose** - Unified development environment
 
 ## ✨ Features
 
@@ -16,22 +23,36 @@ LokalConnect connects people in their immediate area, enabling them to discover 
 
 ## 🚀 Tech Stack
 
-- **Frontend**: React 18 + Vite
+### Frontend (`/app`)
+- **Framework**: React 18 + TypeScript + Vite
 - **Styling**: Tailwind CSS + Radix UI
 - **Routing**: React Router DOM  
 - **Maps**: Leaflet + React Leaflet
 - **Animations**: Framer Motion
 - **Icons**: Lucide React
-- **Development**: Custom Visual Editor Plugins
+- **API Client**: Directus SDK
+
+### Backend (`/backend`)
+- **CMS**: Directus (Headless CMS)
+- **Database**: PostgreSQL
+- **API**: Auto-generated REST + GraphQL
+- **Auth**: JWT + Role-based permissions
+- **Schema Management**: directus-sync
+
+### DevOps
+- **Containerization**: Docker + Docker Compose
+- **Development**: Hot reload for both frontend and backend
+- **Database**: PostgreSQL with automatic migrations
 
 ## 📦 Installation
 
 ### Prerequisites
 
-- Node.js (Version 16+)
-- npm or yarn
+- Node.js (Version 18+)
+- Docker & Docker Compose
+- npm (Version 9+)
 
-### Setup
+### Quick Start
 
 1. **Clone the repository**
    ```bash
@@ -39,54 +60,96 @@ LokalConnect connects people in their immediate area, enabling them to discover 
    cd LocalConnect
    ```
 
-2. **Install dependencies**
+2. **Set up environment variables**
    ```bash
-   npm install
+   cp .env.example .env
+   # Edit .env with your preferred settings
    ```
 
-3. **Start development server**
+3. **Start the full development environment**
    ```bash
    npm run dev
    ```
 
-4. **Open in browser**
-   
-   The application runs at `http://localhost:5173`
+   This will start:
+   - **Frontend**: http://localhost:5173
+   - **Backend API**: http://localhost:8055
+   - **Directus Admin**: http://localhost:8055/admin
+   - **PostgreSQL**: localhost:5432
+
+### Manual Setup (Alternative)
+
+1. **Install all dependencies**
+   ```bash
+   npm run install:all
+   ```
+
+2. **Start backend only**
+   ```bash
+   npm run dev:backend
+   ```
+
+3. **Start frontend only** (in another terminal)
+   ```bash
+   npm run dev:app
+   ```
 
 ## 🛠️ Available Scripts
 
 ```bash
-# Start development server
+# Full development environment (Docker Compose)
 npm run dev
 
-# Build for production
+# Frontend development only
+npm run dev:app
+
+# Backend development only  
+npm run dev:backend
+
+# Build frontend for production
 npm run build
 
-# Preview production build
-npm run preview
+# Install all workspace dependencies
+npm run install:all
+
+# Clean Docker containers and images
+npm run clean
 ```
 
 ## 🏗️ Project Structure
 
 ```
-src/
-├── components/          # Reusable components
-│   ├── ui/             # Design system components
-│   ├── Header.jsx      # App header
-│   ├── Layout.jsx      # Main layout
-│   └── Sidebar.jsx     # Navigation
-├── pages/              # Main pages
-│   ├── Dashboard.jsx   # Home page
-│   ├── Map.jsx         # Map view
-│   ├── Calendar.jsx    # Event calendar
-│   ├── Marketplace.jsx # Marketplace
-│   ├── Messages.jsx    # Messages
-│   ├── Friends.jsx     # Friends management
-│   ├── Groups.jsx      # Groups feature
-│   ├── Profile.jsx     # User profile
-│   └── Settings.jsx    # Settings
-├── lib/                # Utility functions
-└── main.jsx           # App entry point
+LocalConnect/
+├── app/                        # Frontend React TypeScript app
+│   ├── src/
+│   │   ├── components/         # Reusable components
+│   │   │   ├── ui/            # Design system components
+│   │   │   ├── Header.tsx     # App header
+│   │   │   ├── Layout.tsx     # Main layout
+│   │   │   └── Sidebar.tsx    # Navigation
+│   │   ├── pages/             # Main pages
+│   │   │   ├── Dashboard.tsx  # Home page
+│   │   │   ├── Map.tsx        # Map view
+│   │   │   ├── Calendar.tsx   # Event calendar
+│   │   │   ├── Marketplace.tsx # Marketplace
+│   │   │   └── ...
+│   │   ├── services/          # API services (Directus SDK)
+│   │   ├── types/             # TypeScript type definitions
+│   │   ├── lib/               # Utility functions
+│   │   └── main.tsx           # App entry point
+│   ├── public/                # Static assets
+│   ├── package.json
+│   ├── vite.config.ts
+│   └── tsconfig.json
+├── backend/                   # Directus backend
+│   ├── directus/             # Directus instance
+│   ├── sync/                 # directus-sync configurations
+│   ├── seeds/                # Seed data
+│   ├── Dockerfile
+│   └── package.json
+├── docker-compose.yml        # Development environment
+├── .env.example             # Environment variables template
+└── package.json            # Workspace configuration
 ```
 
 ## 🎨 Design System

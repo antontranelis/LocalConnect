@@ -2,8 +2,23 @@ import { useState, useEffect } from "react"
 
 const TOAST_LIMIT = 1
 
+export interface Toast {
+  id: string;
+  title?: string;
+  description?: string;
+  action?: React.ReactNode;
+  duration?: number;
+  dismiss: () => void;
+}
+
+interface ToastState {
+  toasts: Toast[];
+}
+
+type ToastListener = (state: ToastState) => void;
+
 let count = 0
-function generateId() {
+function generateId(): string {
   count = (count + 1) % Number.MAX_VALUE
   return count.toString()
 }
@@ -11,12 +26,12 @@ function generateId() {
 const toastStore = {
   state: {
     toasts: [],
-  },
-  listeners: [],
+  } as ToastState,
+  listeners: [] as ToastListener[],
   
-  getState: () => toastStore.state,
+  getState: (): ToastState => toastStore.state,
   
-  setState: (nextState) => {
+  setState: (nextState: ToastState | ((state: ToastState) => ToastState)) => {
     if (typeof nextState === 'function') {
       toastStore.state = nextState(toastStore.state)
     } else {
@@ -26,7 +41,7 @@ const toastStore = {
     toastStore.listeners.forEach(listener => listener(toastStore.state))
   },
   
-  subscribe: (listener) => {
+  subscribe: (listener: ToastListener) => {
     toastStore.listeners.push(listener)
     return () => {
       toastStore.listeners = toastStore.listeners.filter(l => l !== listener)
@@ -34,10 +49,17 @@ const toastStore = {
   }
 }
 
-export const toast = ({ ...props }) => {
+export interface ToastProps {
+  title?: string;
+  description?: string;
+  action?: React.ReactNode;
+  duration?: number;
+}
+
+export const toast = (props: ToastProps) => {
   const id = generateId()
 
-  const update = (props) =>
+  const update = (props: Partial<ToastProps>) =>
     toastStore.setState((state) => ({
       ...state,
       toasts: state.toasts.map((t) =>

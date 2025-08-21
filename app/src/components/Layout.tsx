@@ -3,8 +3,13 @@ import { motion } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
 import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
+import { ComponentProps } from '@/types';
 
-const Layout = ({ children }) => {
+interface LayoutProps extends ComponentProps {
+  children: React.ReactNode;
+}
+
+const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
   const location = useLocation();
 
