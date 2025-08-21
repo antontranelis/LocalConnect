@@ -17,9 +17,13 @@ const Sidebar = ({ isOpen, onClose }) => {
     { icon: Settings, label: 'Einstellungen', path: '/settings' },
   ];
 
+  const sidebarVariants = {
+    open: { x: 0 },
+    closed: { x: '-100%' },
+  };
+
   return (
     <>
-      {/* Mobile Overlay */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -32,23 +36,15 @@ const Sidebar = ({ isOpen, onClose }) => {
         )}
       </AnimatePresence>
 
-      {/* Sidebar */}
       <motion.aside
-        initial={{ x: -300 }}
-        animate={{ x: isOpen ? 0 : -300 }}
-        transition={{ type: "spring", damping: 25, stiffness: 200 }}
-        className="fixed left-0 top-0 h-full w-64 glass-effect border-r border-white/20 z-50 lg:translate-x-0"
+        variants={sidebarVariants}
+        initial="closed"
+        animate={isOpen ? 'open' : 'closed'}
+        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+        className="fixed left-0 top-0 h-full w-64 glass-effect border-r border-white/20 z-50"
       >
-        <div className="flex items-center justify-between p-4 border-b border-white/20">
+        <div className="flex items-center justify-between p-4 pt-5 border-b border-white/20">
           <h2 className="text-lg font-semibold text-white">LokalConnect</h2>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onClose}
-            className="lg:hidden text-white hover:bg-white/10"
-          >
-            <X className="h-5 w-5" />
-          </Button>
         </div>
 
         <nav className="p-4 space-y-2">

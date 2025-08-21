@@ -1,11 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Menu, Bell, Search, User } from 'lucide-react';
+import { Menu, Bell, Search, User, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/components/ui/use-toast';
 
-const Header = ({ onMenuClick }) => {
+const Header = ({ onMenuClick, sidebarOpen }) => {
   const { toast } = useToast();
 
   const handleNotificationClick = () => {
@@ -33,7 +33,7 @@ const Header = ({ onMenuClick }) => {
     <motion.header
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className="fixed top-0 left-0 right-0 z-50 glass-effect border-b border-white/20"
+      className="sticky top-0 z-40 w-full glass-effect border-b border-white/20"
     >
       <div className="flex items-center justify-between px-4 py-3">
         <div className="flex items-center space-x-4">
@@ -43,7 +43,7 @@ const Header = ({ onMenuClick }) => {
             onClick={onMenuClick}
             className="text-white hover:bg-white/10"
           >
-            <Menu className="h-6 w-6" />
+            {sidebarOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </Button>
           
           <motion.h1
