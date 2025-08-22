@@ -1,0 +1,63 @@
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: localconnect
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5433:5432"
+    restart: unless-stopped
+
+  # Redis for Directus caching
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+
+  # Directus Backend
+  directus:
+    image: directus/directus:11.8.0
+    ports:
+      - "8056:8055"
+    volumes:
+      - directus_uploads:/directus/uploads
+      - ./backend/extensions:/directus/extensions
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      KEY: '255d861b-5ea1-5996-9aa3-922530ec40b1'
+      SECRET: '6116487b-cda1-52c2-b5b5-c8022c45e263'
+      
+      DB_CLIENT: 'pg'
+      DB_HOST: 'postgres'
+      DB_PORT: '5432'
+      DB_DATABASE: 'localconnect'
+      DB_USER: 'postgres'
+      DB_PASSWORD: 'password'
+      
+      CACHE_ENABLED: 'true'
+      CACHE_STORE: 'redis'
+      REDIS: 'redis://redis:6379'
+      
+      ADMIN_EMAIL: 'admin@localconnect.de'
+      ADMIN_PASSWORD: 'admin123!'
+      
+      # Geographic features
+      EXTENSIONS_AUTO_RELOAD: 'true'
+      LOG_LEVEL: 'info'
+      
+      # CORS for development
+      CORS_ENABLED: 'true'
+      CORS_ORIGIN: 'http://localhost:5174'
+      
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  directus_uploads:

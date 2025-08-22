@@ -5,8 +5,10 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Users, Calendar, ShoppingBag } from 'lucide-react';
+import { MapPin, Users, Calendar, ShoppingBag, Loader2 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import { directusService } from '@/services/directus';
+import { DirectusBaseItem } from '@/types/directus';
 import L from 'leaflet';
 
 // Fix for default markers in react-leaflet
@@ -20,6 +22,9 @@ L.Icon.Default.mergeOptions({
 const Map = () => {
   const { toast } = useToast();
   const [userLocation, setUserLocation] = useState<[number, number]>([52.5200, 13.4050]); // Berlin default
+  const [baseItems, setBaseItems] = useState<DirectusBaseItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [activeFilter, setActiveFilter] = useState<string | null>(null);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -36,6 +41,32 @@ const Map = () => {
       );
     }
   }, [toast]);
+
+  useEffect(() => {
+    const loadBaseItems = async () => {
+      try {
+        setLoading(true);
+        const items = activeFilter 
+          ? await directusService.getBaseItemsByType(activeFilter)
+          : await directusService.getBaseItems();
+        setBaseItems(items);
+        toast({
+          title: "✅ Daten geladen",
+          description: `${items.length} Items${activeFilter ? ` (${activeFilter})` : ''} aus der Datenbank geladen`
+        });
+      } catch (error) {
+        console.error('Error loading base items:', error);
+        toast({
+          title: "❌ Fehler",
+          description: "Konnte Daten nicht laden. Verwende Demo-Daten."
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadBaseItems();
+  }, [toast, activeFilter]);
 
   const mapMarkers = [
     {
@@ -106,6 +137,18 @@ const Map = () => {
     });
   };
 
+  const handleFilterChange = (filterType: string | null) => {
+    setActiveFilter(filterType);
+  };
+
+  const filterOptions = [
+    { type: null, label: 'Alle', icon: '🗺️' },
+    { type: 'event', label: 'Events', icon: '📅' },
+    { type: 'marketplace', label: 'Marktplatz', icon: '🛒' },
+    { type: 'group', label: 'Gruppen', icon: '👥' },
+    { type: 'user', label: 'Nutzer', icon: '👤' }
+  ];
+
   return (
     <div className="space-y-6">
       <div className="grid lg:grid-cols-3 gap-6">
@@ -138,8 +181,35 @@ const Map = () => {
                   </Popup>
                 </Marker>
 
-                {/* Other markers */}
-                {mapMarkers.map((marker) => (
+                {/* Backend data markers */}
+                {baseItems.map((item) => (
+                  <Marker
+                    key={item.id}
+                    position={[item.geometry.coordinates[1], item.geometry.coordinates[0]]} // lat, lng
+                    icon={getMarkerIcon(item.item_type)}
+                    eventHandlers={{
+                      click: () => handleMarkerClick(item)
+                    }}
+                  >
+                    <Popup>
+                      <div className="min-w-[200px]">
+                        <h3 className="font-bold text-gray-800">{item.title}</h3>
+                        {item.address && (
+                          <p className="text-gray-600 text-sm mb-2">{item.address}</p>
+                        )}
+                        <Badge className="text-xs">
+                          {item.item_type === 'event' && '📅 Event'}
+                          {item.item_type === 'marketplace' && '🛒 Marktplatz'}
+                          {item.item_type === 'user' && '👤 Nutzer'}
+                          {item.item_type === 'group' && '👥 Gruppe'}
+                        </Badge>
+                      </div>
+                    </Popup>
+                  </Marker>
+                ))}
+
+                {/* Demo markers (if no backend data) */}
+                {baseItems.length === 0 && mapMarkers.map((marker) => (
                   <Marker
                     key={marker.id}
                     position={marker.position as [number, number]}
@@ -194,16 +264,33 @@ const Map = () => {
               >
                 Standort hinzufügen
               </Button>
-              <Button 
-                variant="outline" 
-                className="w-full border-white/20 text-white hover:bg-white/10"
-                onClick={() => toast({
-                  title: "🔍 Filter",
-                  description: "🚧 Diese Funktion ist noch nicht implementiert—aber keine Sorge! Du kannst sie in deinem nächsten Prompt anfordern! 🚀"
-                })}
-              >
-                Filter anwenden
-              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="glass-effect border-white/20">
+            <CardHeader>
+              <CardTitle className="text-white flex items-center space-x-2">
+                <span>🔍</span>
+                <span>Filter</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {filterOptions.map((filter) => (
+                <Button
+                  key={filter.type || 'all'}
+                  variant={activeFilter === filter.type ? "default" : "outline"}
+                  size="sm"
+                  className={`w-full justify-start ${
+                    activeFilter === filter.type 
+                      ? "bg-gradient-to-r from-purple-500 to-blue-500 text-white" 
+                      : "border-white/20 text-white hover:bg-white/10"
+                  }`}
+                  onClick={() => handleFilterChange(filter.type)}
+                >
+                  <span className="mr-2">{filter.icon}</span>
+                  {filter.label}
+                </Button>
+              ))}
             </CardContent>
           </Card>
 
@@ -212,7 +299,22 @@ const Map = () => {
               <CardTitle className="text-white">In der Nähe</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              {mapMarkers.slice(0, 3).map((marker) => (
+              {loading && (
+                <div className="flex items-center justify-center p-4">
+                  <Loader2 className="h-4 w-4 animate-spin text-white" />
+                  <span className="ml-2 text-white text-sm">Lade Daten...</span>
+                </div>
+              )}
+              {(baseItems.length > 0 ? baseItems : mapMarkers).slice(0, 3).map((item) => {
+                const isBaseItem = 'geometry' in item;
+                const marker = isBaseItem ? {
+                  id: item.id,
+                  title: item.title,
+                  description: item.address || 'Kein Standort angegeben',
+                  type: item.item_type
+                } : item;
+                
+                return (
                 <motion.div
                   key={marker.id}
                   initial={{ opacity: 0, y: 10 }}
@@ -250,7 +352,8 @@ const Map = () => {
                     </div>
                   </div>
                 </motion.div>
-              ))}
+                );
+              })}
             </CardContent>
           </Card>
         </motion.div>

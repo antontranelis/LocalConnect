@@ -1,0 +1,42 @@
+{
+  "collection": "base_items",
+  "field": "description",
+  "type": "text",
+  "meta": {
+    "collection": "base_items",
+    "field": "description",
+    "special": null,
+    "interface": "input-rich-text-html",
+    "options": null,
+    "display": null,
+    "display_options": null,
+    "readonly": false,
+    "hidden": false,
+    "sort": 3,
+    "width": "full",
+    "translations": null,
+    "note": "Beschreibung des Items",
+    "conditions": null,
+    "required": false,
+    "group": null,
+    "validation": null,
+    "validation_message": null
+  },
+  "schema": {
+    "name": "description",
+    "table": "base_items",
+    "data_type": "text",
+    "default_value": null,
+    "max_length": null,
+    "numeric_precision": null,
+    "numeric_scale": null,
+    "is_generated": false,
+    "is_nullable": true,
+    "is_unique": false,
+    "is_primary_key": false,
+    "has_auto_increment": false,
+    "foreign_key_column": null,
+    "foreign_key_table": null,
+    "comment": null
+  }
+}

@@ -1,0 +1,63 @@
+# Geographic Base Items Collection
+base_items:
+  collection: base_items
+  meta:
+    accountability: all
+    collection: base_items
+    group: null
+    hidden: false
+    icon: place
+    item_duplication_fields: null
+    note: Basis-Collection für alle geografischen Objekte
+    singleton: false
+    translations: null
+  schema:
+    name: base_items
+
+# Events Collection
+events:
+  collection: events
+  meta:
+    accountability: all
+    collection: events
+    group: null
+    hidden: false
+    icon: event
+    item_duplication_fields: null
+    note: Lokale Events und Veranstaltungen
+    singleton: false
+    translations: null
+  schema:
+    name: events
+
+# Marketplace Items Collection  
+marketplace_items:
+  collection: marketplace_items
+  meta:
+    accountability: all
+    collection: marketplace_items
+    group: null
+    hidden: false
+    icon: shopping_cart
+    item_duplication_fields: null
+    note: Marketplace-Artikel zum Kaufen/Verkaufen
+    singleton: false
+    translations: null
+  schema:
+    name: marketplace_items
+
+# Users Collection (extends default)
+users_extended:
+  collection: users_extended
+  meta:
+    accountability: all
+    collection: users_extended
+    group: null
+    hidden: false
+    icon: person
+    item_duplication_fields: null
+    note: Erweiterte Benutzerinformationen
+    singleton: false
+    translations: null
+  schema:
+    name: users_extended

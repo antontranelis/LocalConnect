@@ -1,0 +1,13 @@
+{
+  "name": "localconnect-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "sync:pull": "directus-sync pull",
+    "sync:push": "directus-sync push",
+    "sync:diff": "directus-sync diff"
+  },
+  "devDependencies": {
+    "directus-sync": "^1.1.0"
+  }
+}

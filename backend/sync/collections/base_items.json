@@ -1,0 +1,27 @@
+{
+  "collection": "base_items",
+  "meta": {
+    "accountability": "all",
+    "collection": "base_items",
+    "group": null,
+    "hidden": false,
+    "icon": "place",
+    "item_duplication_fields": null,
+    "note": "Basis-Collection für alle geografischen Objekte",
+    "singleton": false,
+    "translations": null,
+    "archive_field": null,
+    "archive_app_filter": true,
+    "archive_value": null,
+    "unarchive_value": null,
+    "sort_field": null,
+    "color": null,
+    "sort": 1,
+    "collapse": "open",
+    "preview_url": null,
+    "versioning": false
+  },
+  "schema": {
+    "name": "base_items"
+  }
+}

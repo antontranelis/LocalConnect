@@ -7,12 +7,13 @@
     "backend"
   ],
   "scripts": {
-    "dev": "docker-compose up -d",
+    "dev": "docker compose up -d",
     "dev:app": "cd app && npm run dev",
-    "dev:backend": "cd backend && npm run dev",
+    "dev:backend": "docker compose up -d",
     "build": "npm run build --workspace=app",
     "install:all": "npm install && npm install --workspace=app && npm install --workspace=backend",
-    "clean": "docker-compose down && docker system prune -f"
+    "clean": "docker compose down && docker system prune -f",
+    "backend:logs": "docker compose logs -f directus"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
