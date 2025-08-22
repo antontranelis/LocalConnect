@@ -7,7 +7,7 @@
     "backend"
   ],
   "scripts": {
-    "dev": "docker compose up -d",
+    "dev": "cd app && npm run dev",
     "dev:app": "cd app && npm run dev",
     "dev:backend": "docker compose up -d",
     "build": "npm run build --workspace=app",
