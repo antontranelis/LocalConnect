@@ -5,7 +5,12 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/components/ui/use-toast';
 
-const Header = ({ onMenuClick, sidebarOpen }) => {
+interface HeaderProps {
+  onMenuClick: () => void;
+  sidebarOpen: boolean;
+}
+
+const Header: React.FC<HeaderProps> = ({ onMenuClick, sidebarOpen }) => {
   const { toast } = useToast();
 
   const handleNotificationClick = () => {

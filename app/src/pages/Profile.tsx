@@ -1,7 +1,5 @@
-
-import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { User, Edit, Star, MapPin, Calendar, Users, MessageCircle, Settings, Camera } from 'lucide-react';
+import { Edit, Star, MapPin, Calendar, Users, MessageCircle, Camera } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -15,6 +13,7 @@ const Profile = () => {
   const userProfile = {
     name: 'Max Mustermann',
     avatar: 'MM',
+    avatarImage: 'https://avatar.iran.liara.run/public/45',
     location: 'Berlin Mitte',
     joinDate: 'März 2023',
     reputation: 4.8,
@@ -109,8 +108,8 @@ const Profile = () => {
     });
   };
 
-  const getActivityIcon = (type) => {
-    const icons = {
+  const getActivityIcon = (type: string) => {
+    const icons: { [key: string]: string } = {
       event: '🎉',
       trade: '🛍️',
       group: '👥',
@@ -119,8 +118,8 @@ const Profile = () => {
     return icons[type] || '📅';
   };
 
-  const getActivityColor = (type) => {
-    const colors = {
+  const getActivityColor = (type: string) => {
+    const colors: { [key: string]: string } = {
       event: 'text-purple-400',
       trade: 'text-green-400',
       group: 'text-blue-400',
@@ -130,20 +129,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="space-y-6 pt-16">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center"
-      >
-        <h1 className="text-4xl font-bold text-white mb-2">
-          Mein Profil 👤
-        </h1>
-        <p className="text-gray-300 text-lg">
-          Verwalte dein Profil und deine Reputation
-        </p>
-      </motion.div>
-
+    <div className="space-y-6">
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Profile Card */}
         <motion.div
@@ -156,6 +142,7 @@ const Profile = () => {
             <CardContent className="p-6 text-center">
               <div className="relative inline-block mb-4">
                 <Avatar className="h-24 w-24 mx-auto">
+                  <AvatarImage src={userProfile.avatarImage} alt={userProfile.name} />
                   <AvatarFallback className="bg-gradient-to-r from-purple-500 to-blue-500 text-white text-2xl">
                     {userProfile.avatar}
                   </AvatarFallback>

@@ -1,10 +1,14 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { NavLink } from 'react-router-dom';
-import { Home, Map, Calendar, ShoppingBag, MessageCircle, Users, KeyRound as UsersRound, User, Settings, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Home, Map, Calendar, ShoppingBag, MessageCircle, Users, KeyRound as UsersRound, User, Settings } from 'lucide-react';
 
-const Sidebar = ({ isOpen, onClose }) => {
+interface SidebarProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const menuItems = [
     { icon: Home, label: 'Dashboard', path: '/' },
     { icon: Map, label: 'Karte', path: '/map' },
@@ -43,8 +47,8 @@ const Sidebar = ({ isOpen, onClose }) => {
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
         className="fixed left-0 top-0 h-full w-64 glass-effect border-r border-white/20 z-50"
       >
-        <div className="flex items-center justify-between p-4 pt-5 border-b border-white/20">
-          <h2 className="text-lg font-semibold text-white">LokalConnect</h2>
+        <div className="flex items-center justify-between p-4 pt-12 border-b border-white/20">
+
         </div>
 
         <nav className="p-4 space-y-2">
@@ -66,17 +70,6 @@ const Sidebar = ({ isOpen, onClose }) => {
             </NavLink>
           ))}
         </nav>
-
-        <div className="absolute bottom-4 left-4 right-4">
-          <div className="glass-effect rounded-lg p-3 text-center">
-            <p className="text-sm text-gray-300">Reputation</p>
-            <div className="flex items-center justify-center mt-1">
-              <span className="reputation-badge px-2 py-1 rounded-full text-xs font-bold">
-                ⭐ 4.8
-              </span>
-            </div>
-          </div>
-        </div>
       </motion.aside>
     </>
   );

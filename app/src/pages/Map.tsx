@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,7 +10,7 @@ import { useToast } from '@/components/ui/use-toast';
 import L from 'leaflet';
 
 // Fix for default markers in react-leaflet
-delete L.Icon.Default.prototype._getIconUrl;
+delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
   iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
@@ -19,13 +19,13 @@ L.Icon.Default.mergeOptions({
 
 const Map = () => {
   const { toast } = useToast();
-  const [userLocation, setUserLocation] = useState([52.5200, 13.4050]); // Berlin default
+  const [userLocation, setUserLocation] = useState<[number, number]>([52.5200, 13.4050]); // Berlin default
 
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          setUserLocation([position.coords.latitude, position.coords.longitude]);
+          setUserLocation([position.coords.latitude, position.coords.longitude] as [number, number]);
         },
         () => {
           toast({
@@ -76,8 +76,8 @@ const Map = () => {
     }
   ];
 
-  const getMarkerIcon = (type) => {
-    const colors = {
+  const getMarkerIcon = (type: string) => {
+    const colors: { [key: string]: string } = {
       event: '#8B5CF6',
       marketplace: '#10B981',
       group: '#F59E0B',
@@ -86,13 +86,13 @@ const Map = () => {
     
     return L.divIcon({
       className: 'custom-marker',
-      html: `<div style="background-color: ${colors[type]}; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>`,
+      html: `<div style="background-color: ${colors[type] || '#6B7280'}; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>`,
       iconSize: [20, 20],
       iconAnchor: [10, 10]
     });
   };
 
-  const handleMarkerClick = (marker) => {
+  const handleMarkerClick = (marker: any) => {
     toast({
       title: `📍 ${marker.title}`,
       description: "🚧 Diese Funktion ist noch nicht implementiert—aber keine Sorge! Du kannst sie in deinem nächsten Prompt anfordern! 🚀"
@@ -107,20 +107,7 @@ const Map = () => {
   };
 
   return (
-    <div className="space-y-6 pt-16">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center"
-      >
-        <h1 className="text-4xl font-bold text-white mb-2">
-          Lokale Karte 🗺️
-        </h1>
-        <p className="text-gray-300 text-lg">
-          Entdecke Events, Marktplätze und Gruppen in deiner Nähe
-        </p>
-      </motion.div>
-
+    <div className="space-y-6">
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Map */}
         <motion.div
@@ -143,7 +130,7 @@ const Map = () => {
                 />
                 
                 {/* User location */}
-                <Marker position={userLocation} icon={getMarkerIcon('user')}>
+                <Marker position={userLocation as [number, number]} icon={getMarkerIcon('user')}>
                   <Popup>
                     <div className="text-center">
                       <strong>Dein Standort</strong>
@@ -155,7 +142,7 @@ const Map = () => {
                 {mapMarkers.map((marker) => (
                   <Marker
                     key={marker.id}
-                    position={marker.position}
+                    position={marker.position as [number, number]}
                     icon={getMarkerIcon(marker.type)}
                     eventHandlers={{
                       click: () => handleMarkerClick(marker)

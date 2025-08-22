@@ -1,120 +1,109 @@
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Users, UserPlus, Search, MessageCircle, UserCheck, Star, MapPin } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { UserPlus, Search, MessageCircle, UserCheck, Star, MapPin } from 'lucide-react';
+import { Card, CardContent} from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/use-toast';
+import { User } from '@/types';
 
 const Friends = () => {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
 
-  const friends = [
-    {
-      id: 1,
-      name: 'Anna M.',
-      avatar: 'AM',
-      status: 'online',
-      location: '800m entfernt',
-      reputation: 4.8,
-      mutualFriends: 5,
-      lastSeen: 'Jetzt online',
-      interests: ['Sport', 'Yoga', 'Lesen'],
-      joinedDate: 'Vor 2 Monaten'
-    },
-    {
-      id: 2,
-      name: 'Max K.',
-      avatar: 'MK',
-      status: 'offline',
-      location: '1.2km entfernt',
-      reputation: 4.6,
-      mutualFriends: 3,
-      lastSeen: 'Vor 2 Stunden',
-      interests: ['Musik', 'Kochen', 'Wandern'],
-      joinedDate: 'Vor 1 Monat'
-    },
-    {
-      id: 3,
-      name: 'Lisa S.',
-      avatar: 'LS',
-      status: 'online',
-      location: '600m entfernt',
-      reputation: 4.9,
-      mutualFriends: 8,
-      lastSeen: 'Jetzt online',
-      interests: ['Fotografie', 'Reisen', 'Kunst'],
-      joinedDate: 'Vor 3 Monaten'
-    },
-    {
-      id: 4,
-      name: 'Tom B.',
-      avatar: 'TB',
-      status: 'offline',
-      location: '1.5km entfernt',
-      reputation: 4.7,
-      mutualFriends: 2,
-      lastSeen: 'Vor 1 Tag',
-      interests: ['Gaming', 'Technik', 'Filme'],
-      joinedDate: 'Vor 3 Wochen'
-    }
+  const createFriend = (name: string, isOnline: boolean, distance: string, rating: number, interests: string[]): FriendWithDistance => {
+    const nameParts = name.split(' ');
+    const firstName = nameParts[0] || 'Unknown';
+    const lastName = nameParts[1] || '';
+    
+    return {
+      id: `user-${name.replace(' ', '-').toLowerCase()}`,
+      title: name,
+      item_type: 'user',
+      location: {
+        geometry: { type: 'Point', coordinates: [13.4050 + Math.random() * 0.1, 52.5200 + Math.random() * 0.1] },
+        city: 'Berlin',
+        country: 'Deutschland'
+      },
+      creator: {} as User,
+      status: 'active',
+      visibility: 'friends',
+      tags: interests,
+      created_at: new Date(Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000).toISOString(),
+      updated_at: new Date().toISOString(),
+      is_interactive: true,
+      email: `${name.toLowerCase().replace(' ', '.')}@lokalconnect.de`,
+      first_name: firstName,
+      last_name: lastName,
+      reputation: rating,
+      interests,
+      last_active: isOnline ? new Date().toISOString() : new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000).toISOString(),
+      location_privacy: 'friends',
+      search_radius: 5,
+      is_online: isOnline,
+      distance: distance
+    };
+  };
+
+  const friends: FriendWithDistance[] = [
+    createFriend('Anna M.', true, '800m entfernt', 4.8, ['Sport', 'Yoga', 'Lesen']),
+    createFriend('Max K.', false, '1.2km entfernt', 4.6, ['Musik', 'Kochen', 'Wandern']),
+    createFriend('Lisa S.', true, '600m entfernt', 4.9, ['Fotografie', 'Reisen', 'Kunst']),
+    createFriend('Tom B.', false, '1.5km entfernt', 4.7, ['Gaming', 'Technik', 'Filme'])
   ];
 
-  const suggestions = [
+  interface FriendWithDistance extends User {
+    distance: string;
+  }
+
+  interface FriendSuggestion extends FriendWithDistance {
+    mutualFriends: number;
+    reason: string;
+  }
+
+  interface FriendRequest extends FriendWithDistance {
+    mutualFriends: number;
+    message: string;
+    sentDate: string;
+  }
+
+  const suggestions: FriendSuggestion[] = [
     {
-      id: 5,
-      name: 'Sarah L.',
-      avatar: 'SL',
-      location: '500m entfernt',
-      reputation: 4.8,
+      ...createFriend('Sarah L.', false, '500m entfernt', 4.8, ['Yoga', 'Sport', 'Meditation']),
+      id: 'user-sarah-l',
       mutualFriends: 4,
-      reason: 'Gemeinsame Interessen: Yoga, Sport',
-      interests: ['Yoga', 'Sport', 'Meditation']
+      reason: 'Gemeinsame Interessen: Yoga, Sport'
     },
     {
-      id: 6,
-      name: 'David R.',
-      avatar: 'DR',
-      location: '2km entfernt',
-      reputation: 4.5,
+      ...createFriend('David R.', false, '2km entfernt', 4.5, ['Bücher', 'Geschichte', 'Schach']),
+      id: 'user-david-r',
       mutualFriends: 2,
-      reason: 'Lebt in deiner Nähe',
-      interests: ['Bücher', 'Geschichte', 'Schach']
+      reason: 'Lebt in deiner Nähe'
     },
     {
-      id: 7,
-      name: 'Emma W.',
-      avatar: 'EW',
-      location: '1.8km entfernt',
-      reputation: 4.9,
+      ...createFriend('Emma W.', true, '1.8km entfernt', 4.9, ['Kunst', 'Design', 'Kaffee']),
+      id: 'user-emma-w',
       mutualFriends: 6,
-      reason: 'Viele gemeinsame Freunde',
-      interests: ['Kunst', 'Design', 'Kaffee']
+      reason: 'Viele gemeinsame Freunde'
     }
   ];
 
-  const requests = [
+
+  const requests: FriendRequest[] = [
     {
-      id: 8,
-      name: 'Julia K.',
-      avatar: 'JK',
-      location: '1km entfernt',
-      reputation: 4.6,
+      ...createFriend('Julia K.', false, '1km entfernt', 4.6, ['Community', 'Events']),
+      id: 'user-julia-k',
       mutualFriends: 3,
       message: 'Hi! Ich habe dich beim Community Event gesehen.',
       sentDate: 'Vor 2 Tagen'
     },
     {
-      id: 9,
-      name: 'Michael S.',
-      avatar: 'MS',
-      location: '1.3km entfernt',
-      reputation: 4.7,
+      ...createFriend('Michael S.', true, '1.3km entfernt', 4.7, ['Sport', 'Musik']),
+      id: 'user-michael-s',
       mutualFriends: 1,
       message: 'Wir haben ähnliche Interessen!',
       sentDate: 'Vor 1 Tag'
@@ -122,59 +111,46 @@ const Friends = () => {
   ];
 
   const filteredFriends = friends.filter(friend =>
-    friend.name.toLowerCase().includes(searchTerm.toLowerCase())
+    `${friend.first_name} ${friend.last_name}`.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleMessage = (friend) => {
+  const handleMessage = (friend: User) => {
     toast({
-      title: `💬 Nachricht an ${friend.name}`,
+      title: `💬 Nachricht an ${friend.first_name} ${friend.last_name}`,
       description: "🚧 Diese Funktion ist noch nicht implementiert—aber keine Sorge! Du kannst sie in deinem nächsten Prompt anfordern! 🚀"
     });
   };
 
-  const handleAddFriend = (person) => {
+  const handleAddFriend = (person: User) => {
     toast({
       title: `👥 Freundschaftsanfrage`,
-      description: `Freundschaftsanfrage an ${person.name} gesendet! 🚧 Diese Funktion ist noch nicht implementiert—aber keine Sorge! Du kannst sie in deinem nächsten Prompt anfordern! 🚀`
+      description: `Freundschaftsanfrage an ${person.first_name} ${person.last_name} gesendet! 🚧 Diese Funktion ist noch nicht implementiert—aber keine Sorge! Du kannst sie in deinem nächsten Prompt anfordern! 🚀`
     });
   };
 
-  const handleAcceptRequest = (person) => {
+  const handleAcceptRequest = (person: User) => {
     toast({
       title: `✅ Freundschaftsanfrage angenommen`,
-      description: `${person.name} ist jetzt dein Freund! 🚧 Diese Funktion ist noch nicht implementiert—aber keine Sorge! Du kannst sie in deinem nächsten Prompt anfordern! 🚀`
+      description: `${person.first_name} ${person.last_name} ist jetzt dein Freund! 🚧 Diese Funktion ist noch nicht implementiert—aber keine Sorge! Du kannst sie in deinem nächsten Prompt anfordern! 🚀`
     });
   };
 
-  const handleDeclineRequest = (person) => {
+  const handleDeclineRequest = (person: User) => {
     toast({
       title: `❌ Freundschaftsanfrage abgelehnt`,
-      description: `Freundschaftsanfrage von ${person.name} abgelehnt. 🚧 Diese Funktion ist noch nicht implementiert—aber keine Sorge! Du kannst sie in deinem nächsten Prompt anfordern! 🚀`
+      description: `Freundschaftsanfrage von ${person.first_name} ${person.last_name} abgelehnt. 🚧 Diese Funktion ist noch nicht implementiert—aber keine Sorge! Du kannst sie in deinem nächsten Prompt anfordern! 🚀`
     });
   };
 
-  const handleViewProfile = (person) => {
+  const handleViewProfile = (person: User) => {
     toast({
-      title: `👤 Profil von ${person.name}`,
+      title: `👤 Profil von ${person.first_name} ${person.last_name}`,
       description: "🚧 Diese Funktion ist noch nicht implementiert—aber keine Sorge! Du kannst sie in deinem nächsten Prompt anfordern! 🚀"
     });
   };
 
   return (
-    <div className="space-y-6 pt-16">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center"
-      >
-        <h1 className="text-4xl font-bold text-white mb-2">
-          Freunde 👥
-        </h1>
-        <p className="text-gray-300 text-lg">
-          Vernetze dich mit Menschen in deiner Nachbarschaft
-        </p>
-      </motion.div>
-
+    <div className="space-y-6">
       <Tabs defaultValue="friends" className="w-full">
         <TabsList className="grid w-full grid-cols-3 glass-effect border-white/20">
           <TabsTrigger value="friends" className="text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-blue-500">
@@ -188,7 +164,7 @@ const Friends = () => {
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="friends" className="space-y-4">
+        <TabsContent value="friends" className="space-y-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -205,7 +181,7 @@ const Friends = () => {
             </div>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredFriends.map((friend, index) => (
               <motion.div
                 key={friend.id}
@@ -218,12 +194,13 @@ const Friends = () => {
                     <div className="flex items-center space-x-3 mb-3">
                       <div className="relative">
                         <Avatar className="h-12 w-12">
+                          <AvatarImage src="" />
                           <AvatarFallback className="bg-gradient-to-r from-purple-500 to-blue-500 text-white">
-                            {friend.avatar}
+                            {friend.first_name.charAt(0)}{friend.last_name.charAt(0)}
                           </AvatarFallback>
                         </Avatar>
                         <div className={`absolute -bottom-1 -right-1 h-3 w-3 rounded-full border-2 border-gray-800 ${
-                          friend.status === 'online' ? 'bg-green-500' : 'bg-gray-500'
+                          friend.is_online ? 'bg-green-500' : 'bg-gray-500'
                         }`}></div>
                       </div>
                       
@@ -232,11 +209,11 @@ const Friends = () => {
                           className="text-white font-semibold cursor-pointer hover:text-purple-300 transition-colors"
                           onClick={() => handleViewProfile(friend)}
                         >
-                          {friend.name}
+                          {friend.first_name} {friend.last_name}
                         </h3>
                         <div className="flex items-center space-x-1 text-gray-400 text-sm">
                           <MapPin className="h-3 w-3" />
-                          <span>{friend.location}</span>
+                          <span>{friend.location.city} ({friend.distance})</span>
                         </div>
                       </div>
                       
@@ -247,8 +224,8 @@ const Friends = () => {
                     </div>
                     
                     <div className="space-y-2 mb-3">
-                      <p className="text-gray-400 text-sm">{friend.lastSeen}</p>
-                      <p className="text-gray-400 text-sm">{friend.mutualFriends} gemeinsame Freunde</p>
+                      <p className="text-gray-400 text-sm">{friend.is_online ? 'Jetzt online' : `Zuletzt aktiv: ${new Date(friend.last_active).toLocaleDateString('de-DE')}`}</p>
+                      <p className="text-gray-400 text-sm">Seit: {new Date(friend.created_at).toLocaleDateString('de-DE')}</p>
                       
                       <div className="flex flex-wrap gap-1">
                         {friend.interests.slice(0, 3).map((interest) => (
@@ -297,8 +274,9 @@ const Friends = () => {
                   <CardContent className="p-4">
                     <div className="flex items-center space-x-3 mb-3">
                       <Avatar className="h-12 w-12">
+                        <AvatarImage src="" />
                         <AvatarFallback className="bg-gradient-to-r from-green-500 to-emerald-500 text-white">
-                          {suggestion.avatar}
+                          {suggestion.first_name.charAt(0)}{suggestion.last_name.charAt(0)}
                         </AvatarFallback>
                       </Avatar>
                       
@@ -307,11 +285,11 @@ const Friends = () => {
                           className="text-white font-semibold cursor-pointer hover:text-purple-300 transition-colors"
                           onClick={() => handleViewProfile(suggestion)}
                         >
-                          {suggestion.name}
+                          {suggestion.first_name} {suggestion.last_name}
                         </h3>
                         <div className="flex items-center space-x-1 text-gray-400 text-sm">
                           <MapPin className="h-3 w-3" />
-                          <span>{suggestion.location}</span>
+                          <span>{suggestion.location.city} ({suggestion.distance})</span>
                         </div>
                       </div>
                       
@@ -372,8 +350,9 @@ const Friends = () => {
                   <CardContent className="p-4">
                     <div className="flex items-center space-x-3 mb-3">
                       <Avatar className="h-12 w-12">
+                        <AvatarImage src="" />
                         <AvatarFallback className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white">
-                          {request.avatar}
+                          {request.first_name.charAt(0)}{request.last_name.charAt(0)}
                         </AvatarFallback>
                       </Avatar>
                       
@@ -382,11 +361,11 @@ const Friends = () => {
                           className="text-white font-semibold cursor-pointer hover:text-purple-300 transition-colors"
                           onClick={() => handleViewProfile(request)}
                         >
-                          {request.name}
+                          {request.first_name} {request.last_name}
                         </h3>
                         <div className="flex items-center space-x-1 text-gray-400 text-sm">
                           <MapPin className="h-3 w-3" />
-                          <span>{request.location}</span>
+                          <span>{request.location.city} ({request.distance})</span>
                         </div>
                       </div>
                       

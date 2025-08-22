@@ -1,112 +1,231 @@
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ShoppingBag, Plus, Search, Filter, Heart, MessageCircle, Star } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ShoppingBag, Plus, Search,  Heart, MessageCircle, Star } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/components/ui/use-toast';
+import { MarketplaceItem, MarketplaceCategory, ItemCondition, User } from '@/types';
 
 const Marketplace = () => {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
 
-  const marketplaceItems = [
+  const createMockUser = (name: string, rating: number): User => {
+    const nameParts = name.split(' ');
+    const firstName = nameParts[0] || 'Unknown';
+    const lastName = nameParts[1] || '';
+    
+    return {
+      id: `user-${name.replace(' ', '-').toLowerCase()}`,
+      title: name,
+      item_type: 'user',
+      location: {
+        geometry: { type: 'Point', coordinates: [13.4050, 52.5200] },
+        city: 'Berlin',
+        country: 'Deutschland'
+      },
+      creator: {} as User,
+      status: 'active',
+      visibility: 'public',
+      tags: [],
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      is_interactive: false,
+      email: `${name.toLowerCase().replace(' ', '.')}@lokalconnect.de`,
+      first_name: firstName,
+      last_name: lastName,
+      reputation: rating,
+      interests: [],
+      last_active: new Date().toISOString(),
+      location_privacy: 'public',
+      search_radius: 5,
+      is_online: Math.random() > 0.5
+    };
+  };
+
+  const marketplaceItems: MarketplaceItem[] = [
     {
-      id: 1,
+      id: 'marketplace-1',
       title: 'Mountainbike Trek',
-      price: 450,
-      category: 'Sport',
-      condition: 'Sehr gut',
-      seller: 'Anna M.',
-      sellerRating: 4.8,
-      location: '2km entfernt',
-      images: ['bike1.jpg'],
       description: 'Gut erhaltenes Mountainbike, wenig gefahren',
-      postedDate: '2 Tage',
-      likes: 12,
-      messages: 5
+      item_type: 'marketplace_item',
+      location: {
+        geometry: { type: 'Point', coordinates: [13.4050, 52.5200] },
+        city: 'Berlin',
+        country: 'Deutschland'
+      },
+      creator: createMockUser('Anna M.', 4.8),
+      status: 'active',
+      visibility: 'public',
+      tags: ['mountainbike', 'trek', 'sport'],
+      created_at: '2024-01-18T10:00:00Z',
+      updated_at: '2024-01-18T10:00:00Z',
+      is_interactive: true,
+      price: 450,
+      currency: 'EUR',
+      seller: createMockUser('Anna M.', 4.8),
+      category: 'sports' as MarketplaceCategory,
+      images: ['bike1.jpg'],
+      condition: 'like_new' as ItemCondition,
+      pickup_available: true,
+      delivery_available: true,
+      delivery_radius: 10,
+      is_negotiable: true
     },
     {
-      id: 2,
+      id: 'marketplace-2',
       title: 'Vintage Sofa',
-      price: 200,
-      category: 'Möbel',
-      condition: 'Gut',
-      seller: 'Max K.',
-      sellerRating: 4.6,
-      location: '1.5km entfernt',
-      images: ['sofa1.jpg'],
       description: 'Gemütliches Vintage-Sofa, perfekt für kleine Wohnungen',
-      postedDate: '1 Tag',
-      likes: 8,
-      messages: 3
+      item_type: 'marketplace_item',
+      location: {
+        geometry: { type: 'Point', coordinates: [13.3777, 52.5162] },
+        city: 'Berlin',
+        country: 'Deutschland'
+      },
+      creator: createMockUser('Max K.', 4.6),
+      status: 'active',
+      visibility: 'public',
+      tags: ['vintage', 'sofa', 'möbel'],
+      created_at: '2024-01-19T14:00:00Z',
+      updated_at: '2024-01-19T14:00:00Z',
+      is_interactive: true,
+      price: 200,
+      currency: 'EUR',
+      seller: createMockUser('Max K.', 4.6),
+      category: 'furniture' as MarketplaceCategory,
+      images: ['sofa1.jpg'],
+      condition: 'good' as ItemCondition,
+      pickup_available: true,
+      delivery_available: false,
+      is_negotiable: true
     },
     {
-      id: 3,
+      id: 'marketplace-3',
       title: 'iPhone 13',
-      price: 650,
-      category: 'Elektronik',
-      condition: 'Wie neu',
-      seller: 'Lisa S.',
-      sellerRating: 4.9,
-      location: '800m entfernt',
-      images: ['phone1.jpg'],
       description: 'iPhone 13 in perfektem Zustand, mit Originalverpackung',
-      postedDate: '3 Stunden',
-      likes: 25,
-      messages: 12
+      item_type: 'marketplace_item',
+      location: {
+        geometry: { type: 'Point', coordinates: [13.4105, 52.5244] },
+        city: 'Berlin',
+        country: 'Deutschland'
+      },
+      creator: createMockUser('Lisa S.', 4.9),
+      status: 'active',
+      visibility: 'public',
+      tags: ['iphone', 'smartphone', 'elektronik'],
+      created_at: '2024-01-20T09:00:00Z',
+      updated_at: '2024-01-20T09:00:00Z',
+      is_interactive: true,
+      price: 650,
+      currency: 'EUR',
+      seller: createMockUser('Lisa S.', 4.9),
+      category: 'electronics' as MarketplaceCategory,
+      images: ['phone1.jpg'],
+      condition: 'new' as ItemCondition,
+      pickup_available: true,
+      delivery_available: true,
+      delivery_radius: 15,
+      is_negotiable: false
     },
     {
-      id: 4,
+      id: 'marketplace-4',
       title: 'Küchenmaschine',
-      price: 80,
-      category: 'Haushalt',
-      condition: 'Gut',
-      seller: 'Tom B.',
-      sellerRating: 4.7,
-      location: '1.2km entfernt',
-      images: ['kitchen1.jpg'],
       description: 'Hochwertige Küchenmaschine, selten benutzt',
-      postedDate: '5 Tage',
-      likes: 6,
-      messages: 2
+      item_type: 'marketplace_item',
+      location: {
+        geometry: { type: 'Point', coordinates: [13.4070, 52.5190] },
+        city: 'Berlin',
+        country: 'Deutschland'
+      },
+      creator: createMockUser('Tom B.', 4.7),
+      status: 'active',
+      visibility: 'public',
+      tags: ['küchenmaschine', 'haushalt', 'kochen'],
+      created_at: '2024-01-15T16:00:00Z',
+      updated_at: '2024-01-15T16:00:00Z',
+      is_interactive: true,
+      price: 80,
+      currency: 'EUR',
+      seller: createMockUser('Tom B.', 4.7),
+      category: 'home_garden' as MarketplaceCategory,
+      images: ['kitchen1.jpg'],
+      condition: 'good' as ItemCondition,
+      pickup_available: true,
+      delivery_available: true,
+      delivery_radius: 5,
+      is_negotiable: true
     },
     {
-      id: 5,
+      id: 'marketplace-5',
       title: 'Yoga Matte Set',
-      price: 25,
-      category: 'Sport',
-      condition: 'Sehr gut',
-      seller: 'Sarah L.',
-      sellerRating: 4.8,
-      location: '600m entfernt',
-      images: ['yoga1.jpg'],
       description: 'Yoga Matte mit Zubehör, kaum benutzt',
-      postedDate: '1 Woche',
-      likes: 4,
-      messages: 1
+      item_type: 'marketplace_item',
+      location: {
+        geometry: { type: 'Point', coordinates: [13.3950, 52.5150] },
+        city: 'Berlin',
+        country: 'Deutschland'
+      },
+      creator: createMockUser('Sarah L.', 4.8),
+      status: 'active',
+      visibility: 'public',
+      tags: ['yoga', 'matte', 'sport'],
+      created_at: '2024-01-13T11:00:00Z',
+      updated_at: '2024-01-13T11:00:00Z',
+      is_interactive: true,
+      price: 25,
+      currency: 'EUR',
+      seller: createMockUser('Sarah L.', 4.8),
+      category: 'sports' as MarketplaceCategory,
+      images: ['yoga1.jpg'],
+      condition: 'like_new' as ItemCondition,
+      pickup_available: true,
+      delivery_available: false,
+      is_negotiable: false
     },
     {
-      id: 6,
+      id: 'marketplace-6',
       title: 'Bücher Sammlung',
-      price: 35,
-      category: 'Bücher',
-      condition: 'Gut',
-      seller: 'David R.',
-      sellerRating: 4.5,
-      location: '2.5km entfernt',
-      images: ['books1.jpg'],
       description: 'Sammlung von 20 Romanen, verschiedene Genres',
-      postedDate: '4 Tage',
-      likes: 9,
-      messages: 4
+      item_type: 'marketplace_item',
+      location: {
+        geometry: { type: 'Point', coordinates: [13.4200, 52.5300] },
+        city: 'Berlin',
+        country: 'Deutschland'
+      },
+      creator: createMockUser('David R.', 4.5),
+      status: 'active',
+      visibility: 'public',
+      tags: ['bücher', 'romane', 'literatur'],
+      created_at: '2024-01-16T13:00:00Z',
+      updated_at: '2024-01-16T13:00:00Z',
+      is_interactive: true,
+      price: 35,
+      currency: 'EUR',
+      seller: createMockUser('David R.', 4.5),
+      category: 'books' as MarketplaceCategory,
+      images: ['books1.jpg'],
+      condition: 'good' as ItemCondition,
+      pickup_available: true,
+      delivery_available: true,
+      delivery_radius: 8,
+      is_negotiable: true
     }
   ];
 
-  const categories = ['Alle', 'Sport', 'Möbel', 'Elektronik', 'Haushalt', 'Bücher', 'Kleidung'];
+  const categories = ['Alle', 'sports', 'furniture', 'electronics', 'home_garden', 'books', 'clothing'] as const;
+  const categoryLabels: Record<string, string> = {
+    'Alle': 'Alle',
+    'sports': 'Sport',
+    'furniture': 'Möbel',
+    'electronics': 'Elektronik',
+    'home_garden': 'Haushalt',
+    'books': 'Bücher',
+    'clothing': 'Kleidung'
+  };
   const [selectedCategory, setSelectedCategory] = useState('Alle');
 
   const filteredItems = marketplaceItems.filter(item => {
@@ -115,24 +234,24 @@ const Marketplace = () => {
     return matchesSearch && matchesCategory;
   });
 
-  const handleItemClick = (item) => {
+  const handleItemClick = (item: MarketplaceItem) => {
     toast({
       title: `🛍️ ${item.title}`,
       description: "🚧 Diese Funktion ist noch nicht implementiert—aber keine Sorge! Du kannst sie in deinem nächsten Prompt anfordern! 🚀"
     });
   };
 
-  const handleLike = (item) => {
+  const handleLike = (item: MarketplaceItem) => {
     toast({
       title: "❤️ Favorit",
       description: `"${item.title}" zu Favoriten hinzugefügt! 🚧 Diese Funktion ist noch nicht implementiert—aber keine Sorge! Du kannst sie in deinem nächsten Prompt anfordern! 🚀`
     });
   };
 
-  const handleMessage = (item) => {
+  const handleMessage = (item: MarketplaceItem) => {
     toast({
       title: "💬 Nachricht",
-      description: `Nachricht an ${item.seller} senden. 🚧 Diese Funktion ist noch nicht implementiert—aber keine Sorge! Du kannst sie in deinem nächsten Prompt anfordern! 🚀`
+      description: `Nachricht an ${item.seller.first_name} ${item.seller.last_name} senden. 🚧 Diese Funktion ist noch nicht implementiert—aber keine Sorge! Du kannst sie in deinem nächsten Prompt anfordern! 🚀`
     });
   };
 
@@ -144,20 +263,7 @@ const Marketplace = () => {
   };
 
   return (
-    <div className="space-y-6 pt-16">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center"
-      >
-        <h1 className="text-4xl font-bold text-white mb-2">
-          Lokaler Marktplatz 🛍️
-        </h1>
-        <p className="text-gray-300 text-lg">
-          Kaufe und verkaufe in deiner Nachbarschaft
-        </p>
-      </motion.div>
-
+    <div className="space-y-6">
       {/* Search and Filters */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -202,7 +308,7 @@ const Marketplace = () => {
                 : "border-white/20 text-white hover:bg-white/10"
             }
           >
-            {category}
+            {categoryLabels[category]}
           </Button>
         ))}
       </motion.div>
@@ -221,14 +327,17 @@ const Marketplace = () => {
                 <img  
                   className="w-full h-48 object-cover"
                   alt={`${item.title} - ${item.description}`}
-                 src="https://images.unsplash.com/photo-1571302171879-0965db383dc4" />
+                 src="https://placehold.co/600x400/EEE/31343C" />
                 <div className="absolute top-2 right-2 flex space-x-1">
-                  <Badge className="bg-black/50 text-white">
-                    {item.condition}
+                  <Badge variant="default" className="bg-black/50 text-white">
+                    {item.condition === 'new' ? 'Neu' : 
+                     item.condition === 'like_new' ? 'Wie neu' :
+                     item.condition === 'good' ? 'Gut' :
+                     item.condition === 'fair' ? 'Akzeptabel' : 'Schlecht'}
                   </Badge>
                 </div>
                 <div className="absolute bottom-2 left-2">
-                  <Badge className="bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold">
+                  <Badge variant="default" className="bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold">
                     {item.price}€
                   </Badge>
                 </div>
@@ -243,7 +352,7 @@ const Marketplace = () => {
                     {item.title}
                   </h3>
                   <Badge variant="outline" className="border-white/20 text-gray-300 text-xs">
-                    {item.category}
+                    {categoryLabels[item.category] || item.category}
                   </Badge>
                 </div>
                 
@@ -254,31 +363,32 @@ const Marketplace = () => {
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center space-x-2">
                     <Avatar className="h-6 w-6">
+                      <AvatarImage src="" />
                       <AvatarFallback className="bg-gradient-to-r from-purple-500 to-blue-500 text-white text-xs">
-                        {item.seller.charAt(0)}
+                        {item.seller.first_name.charAt(0)}{item.seller.last_name.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <p className="text-white text-sm font-medium">{item.seller}</p>
+                      <p className="text-white text-sm font-medium">{item.seller.first_name} {item.seller.last_name}</p>
                       <div className="flex items-center space-x-1">
                         <Star className="h-3 w-3 text-yellow-400 fill-current" />
-                        <span className="text-gray-400 text-xs">{item.sellerRating}</span>
+                        <span className="text-gray-400 text-xs">{item.seller.reputation}</span>
                       </div>
                     </div>
                   </div>
-                  <p className="text-gray-400 text-xs">{item.location}</p>
+                  <p className="text-gray-400 text-xs">{item.location.city}</p>
                 </div>
                 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3 text-gray-400 text-xs">
-                    <span>{item.postedDate}</span>
+                    <span>{new Date(item.created_at).toLocaleDateString('de-DE')}</span>
                     <div className="flex items-center space-x-1">
                       <Heart className="h-3 w-3" />
-                      <span>{item.likes}</span>
+                      <span>{Math.floor(Math.random() * 20) + 1}</span>
                     </div>
                     <div className="flex items-center space-x-1">
                       <MessageCircle className="h-3 w-3" />
-                      <span>{item.messages}</span>
+                      <span>{Math.floor(Math.random() * 10) + 1}</span>
                     </div>
                   </div>
                 </div>

@@ -4,8 +4,6 @@ import type {
   GeoJSONPoint, 
   GeoJSONGeometry, 
   GeographicObject,
-  DistanceResult,
-  AnyItem,
   LocationFilter 
 } from '@/types';
 

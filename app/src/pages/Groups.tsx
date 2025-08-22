@@ -1,19 +1,34 @@
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { KeyRound as UsersRound, Plus, Search, Users, Calendar, MapPin, Star, MessageCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/components/ui/use-toast';
+
+interface MockGroup {
+  id: number;
+  name: string;
+  description: string;
+  members: number;
+  category: string;
+  isJoined: boolean;
+  avatar: string;
+  lastActivity: string;
+  nextEvent: string;
+  location: string;
+  rating: number;
+  privacy: string;
+}
 
 const Groups = () => {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
 
-  const groups = [
+  const groups: MockGroup[] = [
     {
       id: 1,
       name: 'Nachbarschaftsgruppe Mitte',
@@ -110,28 +125,28 @@ const Groups = () => {
     return matchesSearch && matchesCategory;
   });
 
-  const handleGroupClick = (group) => {
+  const handleGroupClick = (group: MockGroup) => {
     toast({
       title: `👥 ${group.name}`,
       description: "🚧 Diese Funktion ist noch nicht implementiert—aber keine Sorge! Du kannst sie in deinem nächsten Prompt anfordern! 🚀"
     });
   };
 
-  const handleJoinGroup = (group) => {
+  const handleJoinGroup = (group: MockGroup) => {
     toast({
       title: `✅ Gruppe beitreten`,
       description: `Du bist "${group.name}" beigetreten! 🚧 Diese Funktion ist noch nicht implementiert—aber keine Sorge! Du kannst sie in deinem nächsten Prompt anfordern! 🚀`
     });
   };
 
-  const handleLeaveGroup = (group) => {
+  const handleLeaveGroup = (group: MockGroup) => {
     toast({
       title: `❌ Gruppe verlassen`,
       description: `Du hast "${group.name}" verlassen. 🚧 Diese Funktion ist noch nicht implementiert—aber keine Sorge! Du kannst sie in deinem nächsten Prompt anfordern! 🚀`
     });
   };
 
-  const handleMessageGroup = (group) => {
+  const handleMessageGroup = (group: MockGroup) => {
     toast({
       title: `💬 Gruppenchat`,
       description: `Öffne Chat für "${group.name}". 🚧 Diese Funktion ist noch nicht implementiert—aber keine Sorge! Du kannst sie in deinem nächsten Prompt anfordern! 🚀`
@@ -145,8 +160,8 @@ const Groups = () => {
     });
   };
 
-  const getCategoryColor = (category) => {
-    const colors = {
+  const getCategoryColor = (category: string) => {
+    const colors: Record<string, string> = {
       'Nachbarschaft': 'bg-blue-500',
       'Sport': 'bg-green-500',
       'Wellness': 'bg-purple-500',
@@ -157,25 +172,12 @@ const Groups = () => {
     return colors[category] || 'bg-gray-500';
   };
 
-  const getPrivacyColor = (privacy) => {
+  const getPrivacyColor = (privacy: string) => {
     return privacy === 'Öffentlich' ? 'text-green-400' : 'text-yellow-400';
   };
 
   return (
-    <div className="space-y-6 pt-16">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center"
-      >
-        <h1 className="text-4xl font-bold text-white mb-2">
-          Gruppen 👥
-        </h1>
-        <p className="text-gray-300 text-lg">
-          Finde und erstelle Interessensgruppen in deiner Nähe
-        </p>
-      </motion.div>
-
+    <div className="space-y-6">
       {/* Search and Create */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -251,7 +253,7 @@ const Groups = () => {
                         {group.name}
                       </CardTitle>
                       <div className="flex items-center space-x-2 mt-1">
-                        <Badge className={`${getCategoryColor(group.category)} text-white text-xs`}>
+                        <Badge variant="default" className={`${getCategoryColor(group.category)} text-white text-xs`}>
                           {group.category}
                         </Badge>
                         <span className={`text-xs ${getPrivacyColor(group.privacy)}`}>

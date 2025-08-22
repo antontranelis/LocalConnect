@@ -1,90 +1,234 @@
-
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Calendar as CalendarIcon, Plus, Clock, MapPin, Users } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/components/ui/use-toast';
+import { Event, EventCategory, User } from '@/types';
 
 const Calendar = () => {
   const { toast } = useToast();
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
-  const events = [
+  const mockUser: User = {
+    id: 'user-1',
+    title: 'Organizer',
+    item_type: 'user',
+    location: {
+      geometry: { type: 'Point', coordinates: [13.4050, 52.5200] },
+      city: 'Berlin',
+      country: 'Deutschland'
+    },
+    creator: {} as User,
+    status: 'active',
+    visibility: 'public',
+    tags: [],
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    is_interactive: false,
+    email: 'organizer@lokalconnect.de',
+    first_name: 'Event',
+    last_name: 'Organizer',
+    reputation: 4.8,
+    interests: ['events'],
+    last_active: new Date().toISOString(),
+    location_privacy: 'public',
+    search_radius: 5,
+    is_online: true
+  };
+
+  const events: Event[] = [
     {
-      id: 1,
+      id: 'event-1',
       title: 'Community Grillen',
-      date: '2024-01-20',
-      time: '18:00',
-      location: 'Stadtpark',
-      participants: 15,
-      type: 'social',
-      description: 'Gemeinsames Grillen mit der Nachbarschaft'
+      description: 'Gemeinsames Grillen mit der Nachbarschaft',
+      item_type: 'event',
+      location: {
+        geometry: { type: 'Point', coordinates: [13.4050, 52.5200] },
+        address: 'Stadtpark 1',
+        city: 'Berlin',
+        postal_code: '10115',
+        country: 'Deutschland'
+      },
+      creator: mockUser,
+      status: 'active',
+      visibility: 'public',
+      tags: ['grillen', 'community', 'outdoor'],
+      created_at: '2024-01-15T10:00:00Z',
+      updated_at: '2024-01-15T10:00:00Z',
+      is_interactive: true,
+      interaction_radius: 100,
+      date_time: '2024-01-20T18:00:00Z',
+      organizer: mockUser,
+      participants: [],
+      max_participants: 20,
+      category: 'community' as EventCategory,
+      venue_name: 'Stadtpark',
+      is_indoor: false,
+      participant_count: 15,
+      is_full: false,
+      requires_approval: false
     },
     {
-      id: 2,
+      id: 'event-2',
       title: 'Yoga im Park',
-      date: '2024-01-21',
-      time: '08:00',
-      location: 'Rosengarten',
-      participants: 8,
-      type: 'sport',
-      description: 'Entspannende Yoga-Session im Freien'
+      description: 'Entspannende Yoga-Session im Freien',
+      item_type: 'event',
+      location: {
+        geometry: { type: 'Point', coordinates: [13.3777, 52.5162] },
+        address: 'Rosengarten 5',
+        city: 'Berlin',
+        postal_code: '10178',
+        country: 'Deutschland'
+      },
+      creator: mockUser,
+      status: 'active',
+      visibility: 'public',
+      tags: ['yoga', 'wellness', 'outdoor'],
+      created_at: '2024-01-16T08:00:00Z',
+      updated_at: '2024-01-16T08:00:00Z',
+      is_interactive: true,
+      interaction_radius: 50,
+      date_time: '2024-01-21T08:00:00Z',
+      organizer: mockUser,
+      participants: [],
+      max_participants: 15,
+      category: 'wellness' as EventCategory,
+      venue_name: 'Rosengarten',
+      is_indoor: false,
+      participant_count: 8,
+      is_full: false,
+      requires_approval: true
     },
     {
-      id: 3,
+      id: 'event-3',
       title: 'Flohmarkt',
-      date: '2024-01-22',
-      time: '10:00',
-      location: 'Marktplatz',
-      participants: 32,
-      type: 'market',
-      description: 'Großer Nachbarschaftsflohmarkt'
+      description: 'Großer Nachbarschaftsflohmarkt',
+      item_type: 'event',
+      location: {
+        geometry: { type: 'Point', coordinates: [13.4105, 52.5244] },
+        address: 'Marktplatz 1',
+        city: 'Berlin',
+        postal_code: '10117',
+        country: 'Deutschland'
+      },
+      creator: mockUser,
+      status: 'active',
+      visibility: 'public',
+      tags: ['flohmarkt', 'verkaufen', 'community'],
+      created_at: '2024-01-17T09:00:00Z',
+      updated_at: '2024-01-17T09:00:00Z',
+      is_interactive: true,
+      interaction_radius: 200,
+      date_time: '2024-01-22T10:00:00Z',
+      organizer: mockUser,
+      participants: [],
+      max_participants: 50,
+      category: 'community' as EventCategory,
+      venue_name: 'Marktplatz',
+      is_indoor: false,
+      participant_count: 32,
+      is_full: false,
+      requires_approval: false
     },
     {
-      id: 4,
+      id: 'event-4',
       title: 'Buchclub Treffen',
-      date: '2024-01-23',
-      time: '19:00',
-      location: 'Café Central',
-      participants: 6,
-      type: 'culture',
-      description: 'Diskussion über "Der Alchemist"'
+      description: 'Diskussion über "Der Alchemist"',
+      item_type: 'event',
+      location: {
+        geometry: { type: 'Point', coordinates: [13.4070, 52.5190] },
+        address: 'Café Central, Unter den Linden 42',
+        city: 'Berlin',
+        postal_code: '10117',
+        country: 'Deutschland'
+      },
+      creator: mockUser,
+      status: 'active',
+      visibility: 'public',
+      tags: ['bücher', 'diskussion', 'kultur'],
+      created_at: '2024-01-18T15:00:00Z',
+      updated_at: '2024-01-18T15:00:00Z',
+      is_interactive: true,
+      interaction_radius: 25,
+      date_time: '2024-01-23T19:00:00Z',
+      organizer: mockUser,
+      participants: [],
+      max_participants: 10,
+      category: 'culture' as EventCategory,
+      venue_name: 'Café Central',
+      is_indoor: true,
+      participant_count: 6,
+      is_full: false,
+      requires_approval: true
     },
     {
-      id: 5,
+      id: 'event-5',
       title: 'Laufgruppe',
-      date: '2024-01-24',
-      time: '07:00',
-      location: 'Stadtpark',
-      participants: 12,
-      type: 'sport',
-      description: 'Wöchentliche 5km Laufrunde'
+      description: 'Wöchentliche 5km Laufrunde',
+      item_type: 'event',
+      location: {
+        geometry: { type: 'Point', coordinates: [13.4050, 52.5200] },
+        address: 'Stadtpark, Haupteingang',
+        city: 'Berlin',
+        postal_code: '10115',
+        country: 'Deutschland'
+      },
+      creator: mockUser,
+      status: 'active',
+      visibility: 'public',
+      tags: ['laufen', 'sport', 'gesundheit'],
+      created_at: '2024-01-19T06:00:00Z',
+      updated_at: '2024-01-19T06:00:00Z',
+      is_interactive: true,
+      interaction_radius: 50,
+      date_time: '2024-01-24T07:00:00Z',
+      organizer: mockUser,
+      participants: [],
+      max_participants: 20,
+      category: 'sport' as EventCategory,
+      venue_name: 'Stadtpark',
+      is_indoor: false,
+      participant_count: 12,
+      is_full: false,
+      requires_approval: false
     }
   ];
 
-  const getEventTypeColor = (type) => {
-    const colors = {
-      social: 'bg-blue-500',
+  const getEventTypeColor = (category: EventCategory) => {
+    const colors: Record<EventCategory, string> = {
       sport: 'bg-green-500',
-      market: 'bg-purple-500',
-      culture: 'bg-yellow-500'
+      culture: 'bg-yellow-500',
+      food: 'bg-orange-500',
+      education: 'bg-blue-500',
+      networking: 'bg-purple-500',
+      entertainment: 'bg-pink-500',
+      outdoor: 'bg-emerald-500',
+      wellness: 'bg-teal-500',
+      technology: 'bg-indigo-500',
+      community: 'bg-cyan-500'
     };
-    return colors[type] || 'bg-gray-500';
+    return colors[category] || 'bg-gray-500';
   };
 
-  const getEventTypeIcon = (type) => {
-    const icons = {
-      social: '🎉',
+  const getEventTypeIcon = (category: EventCategory) => {
+    const icons: Record<EventCategory, string> = {
       sport: '🏃',
-      market: '🛍️',
-      culture: '📚'
+      culture: '📚',
+      food: '🍽️',
+      education: '🎓',
+      networking: '🤝',
+      entertainment: '🎭',
+      outdoor: '🌲',
+      wellness: '🧘',
+      technology: '💻',
+      community: '🏘️'
     };
-    return icons[type] || '📅';
+    return icons[category] || '📅';
   };
 
-  const handleEventClick = (event) => {
+  const handleEventClick = (event: Event) => {
     toast({
       title: `📅 ${event.title}`,
       description: "🚧 Diese Funktion ist noch nicht implementiert—aber keine Sorge! Du kannst sie in deinem nächsten Prompt anfordern! 🚀"
@@ -98,7 +242,7 @@ const Calendar = () => {
     });
   };
 
-  const handleJoinEvent = (event) => {
+  const handleJoinEvent = (event: Event) => {
     toast({
       title: `✅ Event beitreten`,
       description: `Du möchtest "${event.title}" beitreten. 🚧 Diese Funktion ist noch nicht implementiert—aber keine Sorge! Du kannst sie in deinem nächsten Prompt anfordern! 🚀`
@@ -130,28 +274,15 @@ const Calendar = () => {
     return days;
   };
 
-  const hasEventOnDay = (day) => {
+  const hasEventOnDay = (day: number | null) => {
     if (!day) return false;
     const today = new Date();
     const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-    return events.some(event => event.date === dateStr);
+    return events.some(event => event.date_time.startsWith(dateStr));
   };
 
   return (
-    <div className="space-y-6 pt-16">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center"
-      >
-        <h1 className="text-4xl font-bold text-white mb-2">
-          Event Kalender 📅
-        </h1>
-        <p className="text-gray-300 text-lg">
-          Entdecke und erstelle lokale Events
-        </p>
-      </motion.div>
-
+    <div className="space-y-6">
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Calendar */}
         <motion.div
@@ -165,6 +296,11 @@ const Calendar = () => {
               <CardTitle className="text-white flex items-center space-x-2">
                 <CalendarIcon className="h-5 w-5" />
                 <span>Januar 2024</span>
+                {selectedDate.getDate() !== new Date().getDate() && (
+                  <span className="text-sm text-blue-300">
+                    (Ausgewählt: {selectedDate.getDate()}.)
+                  </span>
+                )}
               </CardTitle>
               <Button 
                 className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600"
@@ -193,6 +329,7 @@ const Calendar = () => {
                       aspect-square flex items-center justify-center rounded-lg cursor-pointer transition-all
                       ${day ? 'hover:bg-white/10' : ''}
                       ${day === new Date().getDate() ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white' : 'text-gray-300'}
+                      ${day === selectedDate.getDate() ? 'ring-2 ring-blue-400' : ''}
                       ${hasEventOnDay(day) ? 'ring-2 ring-yellow-400' : ''}
                     `}
                     onClick={() => day && setSelectedDate(new Date(2024, 0, day))}
@@ -235,26 +372,26 @@ const Calendar = () => {
                 >
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex items-center space-x-2">
-                      <span className="text-lg">{getEventTypeIcon(event.type)}</span>
+                      <span className="text-lg">{getEventTypeIcon(event.category)}</span>
                       <h3 className="text-white font-medium text-sm">{event.title}</h3>
                     </div>
-                    <Badge className={`${getEventTypeColor(event.type)} text-white text-xs`}>
-                      {event.type}
+                    <Badge variant="default" className={`${getEventTypeColor(event.category)} text-white text-xs`}>
+                      {event.category}
                     </Badge>
                   </div>
                   
                   <div className="space-y-1 text-xs text-gray-400">
                     <div className="flex items-center space-x-1">
                       <Clock className="h-3 w-3" />
-                      <span>{event.date} um {event.time}</span>
+                      <span>{new Date(event.date_time).toLocaleDateString('de-DE')} um {new Date(event.date_time).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}</span>
                     </div>
                     <div className="flex items-center space-x-1">
                       <MapPin className="h-3 w-3" />
-                      <span>{event.location}</span>
+                      <span>{event.venue_name || event.location.address || event.location.city}</span>
                     </div>
                     <div className="flex items-center space-x-1">
                       <Users className="h-3 w-3" />
-                      <span>{event.participants} Teilnehmer</span>
+                      <span>{event.participant_count} Teilnehmer</span>
                     </div>
                   </div>
                   

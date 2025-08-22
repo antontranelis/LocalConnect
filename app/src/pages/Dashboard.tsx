@@ -2,7 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, MapPin, MessageCircle, Users, TrendingUp, Star, LucideIcon } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/components/ui/use-toast';
@@ -32,34 +32,34 @@ const Dashboard: React.FC<PageProps> = () => {
     { icon: Star, label: 'Reputation', value: '4.8', color: 'text-yellow-400' },
   ];
 
-  const recentActivities = [
+  interface ActivityItem {
+    type: 'event' | 'message' | 'marketplace' | 'friend';
+    title: string;
+    time: string;
+    location: string | null;
+  }
+
+  const recentActivities: ActivityItem[] = [
     { type: 'event', title: 'Yoga im Park', time: '2 Std.', location: 'Stadtpark' },
     { type: 'message', title: 'Neue Nachricht von Anna', time: '1 Std.', location: null },
     { type: 'marketplace', title: 'Fahrrad verkauft', time: '3 Std.', location: 'Marktplatz' },
     { type: 'friend', title: 'Max ist jetzt dein Freund', time: '5 Std.', location: null },
   ];
 
-  const upcomingEvents = [
+  interface UpcomingEvent {
+    title: string;
+    date: string;
+    participants: number;
+  }
+
+  const upcomingEvents: UpcomingEvent[] = [
     { title: 'Community Grillen', date: 'Heute 18:00', participants: 15 },
     { title: 'Flohmarkt', date: 'Morgen 10:00', participants: 32 },
     { title: 'Laufgruppe', date: 'Sa 07:00', participants: 8 },
   ];
 
   return (
-    <div className="space-y-8 pt-16">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center"
-      >
-        <h1 className="text-4xl font-bold text-white mb-2">
-          Willkommen zurück! 👋
-        </h1>
-        <p className="text-gray-300 text-lg">
-          Entdecke was in deiner Nachbarschaft passiert
-        </p>
-      </motion.div>
-
+    <div className="space-y-8">
       {/* Stats Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat, index) => (
@@ -156,7 +156,7 @@ const Dashboard: React.FC<PageProps> = () => {
                     <p className="text-gray-400 text-sm">{event.date}</p>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Badge className="bg-gradient-to-r from-purple-500 to-blue-500">
+                    <Badge variant="default" className="bg-gradient-to-r from-purple-500 to-blue-500">
                       {event.participants} Teilnehmer
                     </Badge>
                   </div>

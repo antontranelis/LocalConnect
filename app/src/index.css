@@ -74,7 +74,7 @@ body {
 }
 
 .reputation-badge {
-  background: linear-gradient(135deg, #ffd700 0%, #ffb347 100%);
+  background: transparent;
   color: #333;
 }
 

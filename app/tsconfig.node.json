@@ -8,9 +8,9 @@
     "strict": true
   },
   "include": [
-    "vite.config.js",
-    "postcss.config.js",
+    "vite.config.ts",
+    "postcss.config.js", 
     "tailwind.config.js",
-    "plugins"
+    "plugins/**/*"
   ]
 }

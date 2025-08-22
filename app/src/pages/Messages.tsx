@@ -1,21 +1,34 @@
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { MessageCircle, Send, Search, Phone, Video, MoreVertical, Smile, Paperclip } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/components/ui/use-toast';
 
+interface Conversation {
+  id: number;
+  name: string;
+  lastMessage: string;
+  timestamp: string;
+  unread: number;
+  avatar: string;
+  avatarImage?: string;
+  online: boolean;
+  type: 'direct' | 'group';
+  members?: number;
+}
+
 const Messages = () => {
   const { toast } = useToast();
-  const [selectedChat, setSelectedChat] = useState(null);
+  const [selectedChat, setSelectedChat] = useState<Conversation | null>(null);
   const [messageText, setMessageText] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
 
-  const conversations = [
+  const conversations: Conversation[] = [
     {
       id: 1,
       name: 'Anna M.',
@@ -23,6 +36,7 @@ const Messages = () => {
       timestamp: '2 Min.',
       unread: 2,
       avatar: 'AM',
+      avatarImage: 'https://avatar.iran.liara.run/public/3',
       online: true,
       type: 'direct'
     },
@@ -112,7 +126,7 @@ const Messages = () => {
     conv.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleConversationClick = (conversation) => {
+  const handleConversationClick = (conversation: Conversation) => {
     setSelectedChat(conversation);
     toast({
       title: `💬 Chat mit ${conversation.name}`,
@@ -152,20 +166,7 @@ const Messages = () => {
   };
 
   return (
-    <div className="space-y-6 pt-16">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center"
-      >
-        <h1 className="text-4xl font-bold text-white mb-2">
-          Nachrichten 💬
-        </h1>
-        <p className="text-gray-300 text-lg">
-          Chatte mit Freunden und Gruppen
-        </p>
-      </motion.div>
-
+    <div className="space-y-6">
       <div className="grid lg:grid-cols-3 gap-6 h-[600px]">
         {/* Conversations List */}
         <motion.div
@@ -176,10 +177,6 @@ const Messages = () => {
         >
           <Card className="glass-effect border-white/20 h-full">
             <CardHeader>
-              <CardTitle className="text-white flex items-center space-x-2">
-                <MessageCircle className="h-5 w-5" />
-                <span>Chats</span>
-              </CardTitle>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                 <Input
@@ -206,6 +203,9 @@ const Messages = () => {
                     <div className="flex items-center space-x-3">
                       <div className="relative">
                         <Avatar className="h-10 w-10">
+                          {conversation.avatarImage && (
+                            <AvatarImage src={conversation.avatarImage} alt={conversation.name} />
+                          )}
                           <AvatarFallback className="bg-gradient-to-r from-purple-500 to-blue-500 text-white">
                             {conversation.avatar}
                           </AvatarFallback>
@@ -264,6 +264,9 @@ const Messages = () => {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                       <Avatar className="h-10 w-10">
+                        {selectedChat.avatarImage && (
+                          <AvatarImage src={selectedChat.avatarImage} alt={selectedChat.name} />
+                        )}
                         <AvatarFallback className="bg-gradient-to-r from-purple-500 to-blue-500 text-white">
                           {selectedChat.avatar}
                         </AvatarFallback>
